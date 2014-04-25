@@ -160,12 +160,15 @@ cd $DOTFILES_ROOT/tmp
 echo "Get SourceCodePro Fonts for powerline"
 git clone https://github.com/Lokaltog/powerline-fonts
 if [ $? -eq 0 ];then
-    if [ -d $DOTFILE_ROOT/tmp/powerline-fonts/SourceCodePro ];then
+    if [ -d $DOTFILES_ROOT/tmp/powerline-fonts/SourceCodePro ];then
         echo "Copying SourceCodePro Fonts"
-        cp -f $DOTFILE_ROOT/tmp/powerline-fonts/SourceCodePro/*.otf $HOME/Library/Fonts
+        cp -f $DOTFILES_ROOT/tmp/powerline-fonts/SourceCodePro/*.otf $HOME/Library/Fonts
+        echo "Copy Fonts complete!"
+    else
+        echo "FAIL: copying fonts!!"
     fi
 else
-    echo "Skip copying Fonts"
+    echo "FAIL: git clone powerline-fonts"
 fi
 
 #install Terminal Theme
@@ -175,11 +178,11 @@ if [ $? -eq 0 ];then
     if [ -d $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color ]; then
         cd $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color
         echo "Import Solarized Darm theme"
-        open "$DOTFILE_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256colo/Solarized\ Dark\ xterm-256color.terminal"
+        open "$DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color/Solarized Dark xterm-256color.terminal"
         sleep 1 # Wait a bit to make sure the theme is loaded
         echo "Make Theme Default"
-        defaults write com.apple.terminal "Default Window Settings" -string "Solarized\ Dark\ xterm-256color"
-        defaults write com.apple.terminal "Startup Window Settings" -string "Solarized\ Dark\ xterm-256color"
+        defaults write com.apple.terminal "Default Window Settings" -string "Solarized Dark xterm-256color"
+        defaults write com.apple.terminal "Startup Window Settings" -string "Solarized Dark xterm-256color"
     fi
 fi
 
