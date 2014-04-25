@@ -10,16 +10,17 @@ DOTFILES_ROOT="`pwd`"
 
 echo "Create tmp under $DOTFILES_ROOT for temp files if it doesnt exist"
 mkdir -p $DOTFILES_ROOT/tmp
-if [ ! -f $DOTFILES_ROOT/tmp ]
+if [ ! -d $DOTFILES_ROOT/tmp ]
 then
     echo "FAIL: $DOTFILES_ROOT/tmp does not exist"
     exit 1
+fi
 
 echo "Check if $HOME/bin exists, if not create it"
 mkdir -p $HOME/bin
-if [ ! -f $DOTFILES_ROOT/bin ]
+if [ ! -d $HOME/bin ]
 then
-    echo "FAIL: $DOTFILES_ROOT/bin does not exist"
+    echo "FAIL: $HOME/bin does not exist"
     exit 1
 fi
 
