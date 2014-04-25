@@ -108,6 +108,7 @@ then
         if [ ! -f /usr/local/bin/hg ]; then
             echo "FAIL: Mercurial install FAILED!!"
             exit 1
+        fi
     else
         echo "FAIL: Error unzipping Mercurial"
         exit 1
@@ -129,8 +130,8 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 cd vim/src
-echo "make distclean"
-make distclean
+#echo "make distclean"
+#make distclean
 echo "./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 --prefix=$HOME/opt/vim"
 ./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 --prefix=$HOME/opt/vim
 echo "make"
@@ -157,21 +158,27 @@ cd $DOTFILES_ROOT
 #install Fonts
 cd $DOTFILES_ROOT/tmp
 echo "Get SourceCodePro Fonts for powerline"
-svn export https://github.com/Lokaltog/powerline-fonts/trunk/SourceCodePro
-if [ -d $DOTFILE_ROOT/tmp/SourceCodePro ]
-then
-    echo "Copying SourceCodePro Fonts"
-    cp -f $DOTFILE_ROOT/tmp/SourceCodePro/*.otf $HOME/Library/Fonts
+git clone https://github.com/Lokaltog/powerline-fonts
+if [ $? -eq 0 ];then
+    if [ -d $DOTFILE_ROOT/tmp/powerline-fonts/SourceCodePro ];then
+        echo "Copying SourceCodePro Fonts"
+        cp -f $DOTFILE_ROOT/tmp/powerline-fonts/SourceCodePro/*.otf $HOME/Library/Fonts
+    fi
 fi
+
 #install Terminal Theme
-echo "Get Solarize theme"
-svn export https://github.com/altercation/solarized/trunk/osx-terminal.app-colors-solarized/xterm-256color
-if [ -d $DOTFILE_ROOT/tmp/xterm-256color ]
-then
-    open "$DOTFILE_ROOT/tmp/xterm-256colo/Solarized\ Dark\ xterm-256color.terminal"
-    sleep 1 # Wait a bit to make sure the theme is loaded
-    defaults write com.apple.terminal "Default Window Settings" -string "Solarized\ Dark\ xterm-256color"
-    defaults write com.apple.terminal "Startup Window Settings" -string "Solarized\ Dark\ xterm-256color"
+echo "Git clone Solarize theme"
+git clone https://github.com/altercation/solarized
+if [ $? -eq 0 ];then
+    if [ -d $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color ]; then
+        cd $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color
+        echo "Import Solarized Darm theme"
+        open "$DOTFILE_ROOT/tmp/xterm-256colo/Solarized\ Dark\ xterm-256color.terminal"
+        sleep 1 # Wait a bit to make sure the theme is loaded
+        echo "Make Theme Default"
+        defaults write com.apple.terminal "Default Window Settings" -string "Solarized\ Dark\ xterm-256color"
+        defaults write com.apple.terminal "Startup Window Settings" -string "Solarized\ Dark\ xterm-256color"
+    fi
 fi
 
 cd $DOTFILES_ROOT
@@ -204,6 +211,6 @@ fi
 #done
 
 echo "Change shell to /usr/local/bin/zsh"
-chsh -s /usr/local/bin/zsh
+sudo chsh -s /usr/local/bin/zsh
 
 exit 0
