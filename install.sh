@@ -12,12 +12,12 @@ echo "Create tmp under $DOTFILES_ROOT for temp files"
 mkdir $DOTFILES_ROOT/tmp
 
 echo "Check if $HOME/bin exists"
-if ![-d $HOME/bin ]
+if [-d $HOME/bin ]
 then
+    echo "$HOME/bin exists"
+else
     echo "Creating $HOME/bin"
     mkdir $HOME/bin
-else
-    echo "$HOME/bin exists"
 fi
 
 #Install xcode
@@ -25,7 +25,7 @@ fi
 
 echo "Install Homebrew"
 #Install HomeBrew
-ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
 
 echo "Install zsh"
 #Install zsh
@@ -36,7 +36,12 @@ echo "Add /usr/local/bin/zsh to /private/etc/shells"
 echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells
 
 brew install python
-brew install mercurial git
+brew install git
+
+cd $DOTFILES_ROOT/tmp
+curl -O http://mercurial.berkwood.com/binaries/Mercurial-2.6.2-py2.7-macosx10.8.zip
+udnzip Mercurial-2.6.2-py2.7-macosx10.8.zip
+sudo installer -pkg $DOTFILES_ROOT/tmp/mercurial-2.6.2_20130606-py2.7-macosx10.8/mercurial-2.6.2+20130606-py2.7-macosx10.8.mpkg -target /
 
 #Source your zshrc to make sure your paths are setup
 source $DOTFILES_ROOT/.myzshrc
