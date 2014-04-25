@@ -185,10 +185,22 @@ ln -s $DOTFILES_ROOT/.vimrc $HOME/.vimrc
 #install prezto
 cd $DOTFILES_ROOT
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-setopt EXTENDED_GLOB
-for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-done
+if [ $? -eq 0 ]; then
+    ln -s ~/.zprezto/runcoms/zlogin ~/.zlogin
+    ln -s ~/.zprezto/runcoms/zlogout ~/.zlogout
+    ln -s ~/.zprezto/runcoms/zpreztorc ~/.zpreztorc
+    ln -s ~/.zprezto/runcoms/zprofile ~/.zprofile
+    ln -s ~/.zprezto/runcoms/zshenv ~/.zshenv
+    ln -s ~/.zprezto/runcoms/zshrc ~/.zshrc
+else
+    echo "FAIL: git clone prezto FAILED"
+    exit 1
+fi
+
+# below linking not working
+#for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+#    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+#done
 
 echo "Change shell to /usr/local/bin/zsh"
 chsh -s /usr/local/bin/zsh
