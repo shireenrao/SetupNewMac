@@ -205,3 +205,4 @@ fi
 echo "Change shell to /usr/local/bin/zsh"
 chsh -s /usr/local/bin/zsh
 
+exit 0
