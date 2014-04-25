@@ -111,7 +111,7 @@ then
         echo "FAIL: Error unzipping Mercurial"
         exit 1
     fi
-then
+else
     echo "FAIL: Mercurial zip file not found"
     exit 1
 fi
@@ -141,7 +141,7 @@ fi
 echo "make install"
 make install
 if [ $? -ne 0 ]; then
-    echo FAIL: vim make install FAILED"
+    echo "FAIL: vim make install FAILED"
     exit 1
 fi
 
