@@ -59,7 +59,7 @@ then
        exit 1
     fi
 else
-    print "homebrew zsh exists"
+    echo "homebrew zsh exists"
 fi
 
 #Add zsh to shells if not there already
