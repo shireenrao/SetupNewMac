@@ -8,16 +8,19 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 DOTFILES_ROOT="`pwd`"
 
-echo "Create tmp under $DOTFILES_ROOT for temp files"
-mkdir $DOTFILES_ROOT/tmp
-
-echo "Check if $HOME/bin exists"
-if [-d $HOME/bin ]
+echo "Create tmp under $DOTFILES_ROOT for temp files if it doesnt exist"
+mkdir -p $DOTFILES_ROOT/tmp
+if [ ! -f $DOTFILES_ROOT/tmp ]
 then
-    echo "$HOME/bin exists"
-else
-    echo "Creating $HOME/bin"
-    mkdir $HOME/bin
+    echo "FAIL: $DOTFILES_ROOT/tmp does not exist"
+    exit 1
+
+echo "Check if $HOME/bin exists, if not create it"
+mkdir -p $HOME/bin
+if [ ! -f $DOTFILES_ROOT/bin ]
+then
+    echo "FAIL: $DOTFILES_ROOT/bin does not exist"
+    exit 1
 fi
 
 #Install xcode
@@ -25,23 +28,93 @@ fi
 
 echo "Install Homebrew"
 #Install HomeBrew
-ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+command -v brew >/dev/null 2>&1 || {
+    echo "Installing Homebrew"
+    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+}
+if [ $? -ne 0 ]
+then
+    echo "FAIL: Homebrew install FAILED!"
+    exit 1
+else
+    echo "Homebrew installed!"
+fi
 
-echo "Install zsh"
+echo "Brewing preparation"
+brew update
+brew doctor
+
 #Install zsh
-brew install zsh
+echo "Check zsh..."
 
-#Add zsh to shells
-echo "Add /usr/local/bin/zsh to /private/etc/shells"
-echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells
+#Check zsh
+if [ ! -f /usr/local/bin/zsh ]
+then
+    echo "Homebrew zsh not there.. Begin Install..."
+    brew install zsh
+    if [ ! -f /usr/local/bin/zsh ]
+    then
+       echo "FAIL: Homebrew zsh install failed"
+       exit 1
+    fi
+else
+    print "homebrew zsh exists"
+fi
 
-brew install python
-brew install git
+#Add zsh to shells if not there already
+if grep -Fxq "/usr/local/bin/zsh" /private/etc/shells
+then
+    echo "/usr/local/bin/zsh already exists in /private/etc/shells"
+else
+    echo "Add /usr/local/bin/zsh to /private/etc/shells"
+    echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells
+fi
+
+if [ ! -f /usr/local/bin/python ]
+then
+    echo "Homebrew python does not exist.. begin install..."
+    brew install python
+    if [ ! -f /usr/local/bin/python ]
+    then
+        echo "Homebrew python install failed!"
+        exit 1
+    fi
+else
+    echo "Homebrew python exists"
+fi
+
+if [ ! -f /usr/local/bin/git ]
+then
+    echo "Homebrew git does not exist.. begin install..."
+    brew install git
+    if [ ! -f /usr/local/bin/git ]
+    then
+        echo "Homebrew git install failed!"
+        exit 1
+    fi
+else
+    echo "Homebrew git exists"
+    exit 1
+fi
 
 cd $DOTFILES_ROOT/tmp
 curl -O http://mercurial.berkwood.com/binaries/Mercurial-2.6.2-py2.7-macosx10.8.zip
-udnzip Mercurial-2.6.2-py2.7-macosx10.8.zip
-sudo installer -pkg $DOTFILES_ROOT/tmp/mercurial-2.6.2_20130606-py2.7-macosx10.8/mercurial-2.6.2+20130606-py2.7-macosx10.8.mpkg -target /
+if [ -f $DOTFILES_ROOT/tmp/Mercurial-2.6.2-py2.7-macosx10.8.zip ]
+then
+    unzip Mercurial-2.6.2-py2.7-macosx10.8.zip
+    if [ $? -eq 0 ]; then
+        sudo installer -pkg $DOTFILES_ROOT/tmp/mercurial-2.6.2_20130606-py2.7-macosx10.8/mercurial-2.6.2+20130606-py2.7-macosx10.8.mpkg -target /
+        if [ ! -f /usr/local/bin/hg ]; then
+            echo "FAIL: Mercurial install FAILED!!"
+            exit 1
+    else
+        echo "FAIL: Error unzipping Mercurial"
+        exit 1
+    fi
+then
+    echo "FAIL: Mercurial zip file not found"
+    exit 1
+fi
 
 #Source your zshrc to make sure your paths are setup
 source $DOTFILES_ROOT/.myzshrc
@@ -50,6 +123,10 @@ source $DOTFILES_ROOT/.myzshrc
 echo "Begin Install vim"
 cd $DOTFILES_ROOT/tmp
 hg clone https://vim.googlecode.com/hg/ vim
+if [ $? -ne 0 ]; then
+    echo "FAIL: Mercurial clone vim FAILED"
+    exit 1
+fi
 cd vim/src
 echo "make distclean"
 make distclean
@@ -57,10 +134,18 @@ echo "./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 -
 ./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 --prefix=$HOME/opt/vim
 echo "make"
 make
+if [ $? -ne 0 ]; then
+    echo "FAIL: vim make FAILED"
+    exit 1
+fi
 echo "make install"
 make install
+if [ $? -ne 0 ]; then
+    echo FAIL: vim make install FAILED"
+    exit 1
+fi
 
-if [-f $HOME/opt/vim/bin/vim ]
+if [ -f $HOME/opt/vim/bin/vim ]
 then
     echo "Creating vim links to $HOME/bin"
     ln -s $HOME/opt/vim/bin/vim $HOME/bin/vim
@@ -94,8 +179,8 @@ echo "init and update local vim plugin submodules from Github"
 git submodule init
 git submodule update
 echo "link .vimrc and .vim to $HOME"
-ln -s .vim $HOME/.vim
-ln -s .vimrc $HOME/.vimrc
+ln -s $DOTFILES_ROOT/.vim $HOME/.vim
+ln -s $DOTFILES_ROOT/.vimrc $HOME/.vimrc
 
 #install prezto
 cd $DOTFILES_ROOT
