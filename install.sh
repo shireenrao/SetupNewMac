@@ -45,9 +45,9 @@ echo "Brewing preparation"
 brew update
 brew doctor
 
+echo ""
 #Install zsh
 echo "Check zsh..."
-
 #Check zsh
 if [ ! -f /usr/local/bin/zsh ]
 then
@@ -71,6 +71,8 @@ else
     echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells
 fi
 
+echo ""
+echo "Check Homebrew python..."
 if [ ! -f /usr/local/bin/python ]
 then
     echo "Homebrew python does not exist.. begin install..."
@@ -84,6 +86,8 @@ else
     echo "Homebrew python exists"
 fi
 
+echo ""
+echo "Check Homebrew git"
 if [ ! -f /usr/local/bin/git ]
 then
     echo "Homebrew git does not exist.. begin install..."
@@ -95,19 +99,22 @@ then
     fi
 else
     echo "Homebrew git exists"
-    exit 1
 fi
 
+echo ""
+echo "Begin Mercurial install from http://mercurial.berkwood.com"
 cd $DOTFILES_ROOT/tmp
 curl -O http://mercurial.berkwood.com/binaries/Mercurial-2.6.2-py2.7-macosx10.8.zip
 if [ -f $DOTFILES_ROOT/tmp/Mercurial-2.6.2-py2.7-macosx10.8.zip ]
 then
-    unzip Mercurial-2.6.2-py2.7-macosx10.8.zip
+    unzip Mercurial-2.6.2-py2.7-macosx10.8.zip >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         sudo installer -pkg $DOTFILES_ROOT/tmp/mercurial-2.6.2_20130606-py2.7-macosx10.8/mercurial-2.6.2+20130606-py2.7-macosx10.8.mpkg -target /
         if [ ! -f /usr/local/bin/hg ]; then
             echo "FAIL: Mercurial install FAILED!!"
             exit 1
+        else
+            echo "Mercurial installed!!"
         fi
     else
         echo "FAIL: Error unzipping Mercurial"
@@ -118,9 +125,12 @@ else
     exit 1
 fi
 
+echo ""
+echo "Update PATH"
 #Source your zshrc to make sure your paths are setup
 source $DOTFILES_ROOT/.myzshrc
 
+echo ""
 #install vim
 echo "Begin Install vim"
 cd $DOTFILES_ROOT/tmp
@@ -133,15 +143,15 @@ cd vim/src
 #echo "make distclean"
 #make distclean
 echo "./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 --prefix=$HOME/opt/vim"
-./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 --prefix=$HOME/opt/vim
+./configure --enable-pythoninterp --with-features=huge --enable-gui=gtk2 --prefix=$HOME/opt/vim >/dev/null 2>&1
 echo "make"
-make
+make >/dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "FAIL: vim make FAILED"
     exit 1
 fi
 echo "make install"
-make install
+make install >/dev/null 2>&1
 if [ $? -ne 0 ]; then
     echo "FAIL: vim make install FAILED"
     exit 1
@@ -149,13 +159,16 @@ fi
 
 if [ -f $HOME/opt/vim/bin/vim ]
 then
+    echo "vim build from source complete"
     echo "Creating vim links to $HOME/bin"
     ln -s $HOME/opt/vim/bin/vim $HOME/bin/vim
     ln -s $HOME/opt/vim/bin/vim $HOME/bin/vi
+    echo "linking vim complete!"
 fi
 cd $DOTFILES_ROOT
 
-#install Fonts
+echo ""
+echo "Begin install powerline fonts"
 cd $DOTFILES_ROOT/tmp
 echo "Get SourceCodePro Fonts for powerline"
 git clone https://github.com/Lokaltog/powerline-fonts
@@ -171,6 +184,7 @@ else
     echo "FAIL: git clone powerline-fonts"
 fi
 
+echo ""
 #install Terminal Theme
 echo "Git clone Solarize theme"
 git clone https://github.com/altercation/solarized
@@ -178,14 +192,17 @@ if [ $? -eq 0 ];then
     if [ -d $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color ]; then
         cd $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color
         echo "Import Solarized Darm theme"
-        open "$DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color/Solarized Dark xterm-256color.terminal"
+        open "Solarized Dark xterm-256color.terminal"
         sleep 1 # Wait a bit to make sure the theme is loaded
-        echo "Make Theme Default"
-        defaults write com.apple.terminal "Default Window Settings" -string "Solarized Dark xterm-256color"
-        defaults write com.apple.terminal "Startup Window Settings" -string "Solarized Dark xterm-256color"
+        echo "Make Theme Default by copying terminal settings to your preferences"
+        #defaults write com.apple.terminal "Default Window Settings" -string "Solarized Dark xterm-256color"
+        #defaults write com.apple.terminal "Startup Window Settings" -string "Solarized Dark xterm-256color"
+        cp $DOTFILES_ROOT/.com.apple.Terminal.plist ~/Library/Preferences/com.apple.Terminal.plist
+        echo "Theme settings complete!"
     fi
 fi
 
+echo ""
 cd $DOTFILES_ROOT
 #install vim plugins
 echo "init and update local vim plugin submodules from Github"
@@ -194,17 +211,22 @@ git submodule update
 echo "link .vimrc and .vim to $HOME"
 ln -s $DOTFILES_ROOT/.vim $HOME/.vim
 ln -s $DOTFILES_ROOT/.vimrc $HOME/.vimrc
+echo "linking complete!"
 
-#install prezto
+echo ""
+echo "Begin install prezto"
 cd $DOTFILES_ROOT
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 if [ $? -eq 0 ]; then
+    echo "link all zprezto config files..."
     ln -s ~/.zprezto/runcoms/zlogin ~/.zlogin
     ln -s ~/.zprezto/runcoms/zlogout ~/.zlogout
     ln -s ~/.zprezto/runcoms/zpreztorc ~/.zpreztorc
     ln -s ~/.zprezto/runcoms/zprofile ~/.zprofile
     ln -s ~/.zprezto/runcoms/zshenv ~/.zshenv
     ln -s ~/.zprezto/runcoms/zshrc ~/.zshrc
+    echo "Linking complete!"
+    echo "zprezto installed!!"
 else
     echo "FAIL: git clone prezto FAILED"
     exit 1
@@ -215,6 +237,7 @@ fi
 #    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
 #done
 
+echo ""
 echo "Change shell to /usr/local/bin/zsh"
 sudo chsh -s /usr/local/bin/zsh
 
