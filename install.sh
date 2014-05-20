@@ -127,8 +127,18 @@ fi
 
 echo ""
 echo "Update PATH"
-#Source your zshrc to make sure your paths are setup
-source $DOTFILES_ROOT/.myzshrc
+export PATH=/usr/local/bin:$PATH
+
+echo ""
+echo "Check if Homebrew python is default"
+PYTHON_PATH=$(which python)
+if [ ! "$PYTHON_PATH" == "/usr/local/bin/python" ]
+then
+    echo "FAIL: Not homebrew python"
+    exit 1
+else
+    echo "Homebrew Python is default"
+fi
 
 echo ""
 #install vim
@@ -240,7 +250,7 @@ fi
 
 echo ""
 echo "Change shell to /usr/local/bin/zsh"
-sudo chsh -s /usr/local/bin/zsh
+chsh -s /usr/local/bin/zsh
 
 echo "========================================================================"
 echo "= Change the Font to Source Code Pro (a powerline compatible font) and ="

@@ -40,8 +40,8 @@ inoremap <C-n> :nohl<CR>
 " Ctrl+w + <movement>
 " Every unnecessary keystroke that can be saved is good for your health :)
 map <c-j> <c-w>j
-map <c-k> <c-w>k 
-map <c-l> <c-w>l                                  
+map <c-k> <c-w>k
+map <c-l> <c-w>l
 map <c-h> <c-w>h
 
 " easier moving between tabs
@@ -61,18 +61,6 @@ vnoremap > >gv " better indentation
 " MUST be inserted BEFORE the colorscheme command
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 au InsertLeave * match ExtraWhitespace /\s\+$/
-
-" Color scheme
-" mkdir -p ~/.vim/colors && cd ~/.vim/colors
-" wget -O wombat256mod.vim
-" http://www.vim.org/scripts/download_script.php?src_id=13400
-" set t_Co=256
-" color wombat256mod
-" wombat256mod disabled as solarize is enabled below
-
-" Enable syntax highlighting
-"syntax enable
-" Above disabled as this is part of powerline settings
 
 " Showing line numbers and length
 set number " show line numbers
@@ -116,14 +104,16 @@ set nocompatible
 filetype off              " Required
 
 set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+call vundle#begin()
 
-Bundle 'gmarik/vundle'    
+Bundle 'gmarik/vundle'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-Bundle 'davidhalter/jedi-vim'
 Bundle 'kien/ctrlp.vim'
+Bundle 'scrooloose/syntastic'
+Bundle 'Valloric/YouCompleteMe'
 
+call vundle#end()
 filetype plugin indent on " Required
 "End Vundle
 
@@ -137,28 +127,17 @@ let g:solarized_termcolors = 256
 colorscheme solarized
 
 " Powerline settings
-"set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim 
-" above line replaced with rtp in Bundle line
-"set guifont=Source\ Code\ Pro\ for\ Powerline:h15 
-" Above line not required
 set laststatus=2
 set encoding=utf-8
 set t_Co=256
 let g:Powerline_symbols = 'fancy'
-"set fillchars+=stl:\ ,stlnc:\ 
-" Above line not required
-"set term=xterm-256color 
-" Above line not required
-"set termencoding=utf-8 
-" Above line not required
 
-"" jedi-vim settings
-let g:jedi#related_names_command = "<leader>z"
-let g:jedi#popup_on_dot = 0
-let g:jedi#popup_select_first = 0
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#use_splits_not_buffers = "left"
+" Set break point
 map <Leader>b Oimport ipdb; ipdb.set_trace() # BREAKPOINT<C-c>
+
+" YCM
+"let g:ycm_path_to_python_interpreter = '/usr/bin/python'
+nnoremap <leader>g :YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 " Settings for ctrlp
 let g:ctrlp_max_height = 30
