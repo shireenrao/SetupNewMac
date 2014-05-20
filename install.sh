@@ -168,7 +168,7 @@ if [ $? -eq 0 ];then
         open "Solarized Dark xterm-256color.terminal"                           
         sleep 1 # Wait a bit to make sure the theme is loaded                   
         echo "Change theme to Solarized Dark"                                   
-        osascript -e "tell application \"Terminal\" to set current settings of front window to settings set \"Solarized Dark 
+        osascript -e "tell application \"Terminal\" to set current settings of back window to settings set \"Solarized Dark xterm-256color\"" 
         #defaults write com.apple.terminal "Default Window Settings" -string "Solarized Dark xterm-256color"
         #defaults write com.apple.terminal "Startup Window Settings" -string "Solarized Dark xterm-256color"
         #cp $DOTFILES_ROOT/.com.apple.Terminal.plist ~/Library/Preferences/com.apple.Terminal.plist
