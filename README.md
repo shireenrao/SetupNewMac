@@ -18,4 +18,12 @@ git clone command again.
 
 Once the install script finishes, Open Terminal Preferences and make the
 Solarized Dark or Light theme the default terminal theme. Also change the font
-to "Sauce Code Powerline"
+to "Sauce Code Powerline". Close all terminal windows and open a new window.
+You should see your terminal using the Solarized theme now. 
+
+Run the following to finish installing vim with some neat plugins:
+```sh
+cd ~/.dotfiles
+sh ./install_vim.sh
+```
+
