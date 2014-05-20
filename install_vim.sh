@@ -1,4 +1,6 @@
-TFILES_ROOT="`pwd`"
+#!/bin/bash
+
+DOTFILES_ROOT="`pwd`"
 
 echo ""                                                                            
 #install vim                                                                       

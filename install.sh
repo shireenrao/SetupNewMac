@@ -176,6 +176,36 @@ if [ $? -eq 0 ];then
     fi                                                                          
 fi
 
+echo ""
+cd $DOTFILES_ROOT                                                               
+#install vim plugins                                                            
+echo "init and update local vim plugin submodules from Github"                  
+git submodule init                                                              
+git submodule update
+cd $DOTFILES_ROOT/.vim/bundle/YouCompleteMe
+git submodule update  --init --recursive
+./install.sh --clang-completer
+
+echo ""
+echo "Begin installing MacVim"
+if [ ! -f /usr/local/bin/mvim ]
+then
+    echo "Homebrew macvim does not exist.. begin install..."
+    brew install macvim
+    if [ ! -f /usr/local/bin/mvim ]
+    then
+        echo "Homebrew MacVim install failed!"
+        exit 1
+    else
+        echo "Create symlinks for vim in $HOME/bin"
+        ln -s /usr/local/bin/mvim $HOME/bin/vim
+        ln -s /usr/local/bin/mvim $HOME/bin/vi
+    fi
+else
+    echo "Homebrew MacVim exists"
+fi
+
+
 echo "Begin install prezto"
 cd $DOTFILES_ROOT
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
@@ -202,6 +232,11 @@ fi
 echo ""
 echo "Change shell to /usr/local/bin/zsh"
 chsh -s /usr/local/bin/zsh
+
+echo ""
+echo "Update Path"
+echo "export PATH=$HOME/bin:$PATH" | tee -a ~/.zprezto/runcoms/zshrc
+echo "Path fixed..."
 
 echo "========================================================================"
 echo "= Change the Font to Source Code Pro (a powerline compatible font) and ="
