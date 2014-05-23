@@ -1,8 +1,41 @@
 # Automated New Mac Dev Environment Setup
 
-This is a repo where one can clone and install all tools automatically
+This is a repo where one can install the following tools automatically
+
+* Homebrew
+  * zsh
+  * python
+  * git
+  * MacVim
+* Mercurial
+* Powerline Font Source Code Pro
+* Solarize Terminal Theme
+* Vim Plugins
+  * Vundle
+  * Powerline
+  * Ctrlp
+  * Vim-colors-solarized
+  * Syntastic
+  * YouCompleteMe
+* Prezto
+* iPython
 
 ## install
+
+Make sure you have Xcode and command line tools installed. You can run the
+following to install the command line tools first and then run the same command
+again to install XCode:
+
+```sh
+xcode-select --install
+```
+
+Before you proceed with cloning this repo and running the instll script, make
+sure you accept XCode's license. You can do that from the command line:
+
+```sh
+sudo xcodebuild -license
+```
 
 Run this:
 ```sh
@@ -21,9 +54,4 @@ Solarized Dark or Light theme the default terminal theme. Also change the font
 to "Sauce Code Powerline". Close all terminal windows and open a new window.
 You should see your terminal using the Solarized theme now. 
 
-Run the following to finish installing vim with some neat plugins:
-```sh
-cd ~/.dotfiles
-sh ./install_vim.sh
-```
 

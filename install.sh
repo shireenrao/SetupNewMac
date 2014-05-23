@@ -6,6 +6,12 @@ sudo -v
 # Keep-alive: update existing `sudo` time stamp until `.osx` has finished       
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+function maintain_sudo(){
+    # maintain sudo
+    echo "Re-establish sudo"
+    sudo -n true
+}
+
 DOTFILES_ROOT="`pwd`"
 
 echo "Create tmp under $DOTFILES_ROOT for temp files if it doesnt exist"
@@ -41,9 +47,13 @@ else
     echo "Homebrew installed!"
 fi
 
+echo ""
 echo "Brewing preparation"
 brew update
 brew doctor
+
+# maintain sudo
+maintain_sudo
 
 echo ""
 #Install zsh
@@ -61,6 +71,9 @@ then
 else
     echo "homebrew zsh exists"
 fi
+
+# maintain sudo
+maintain_sudo
 
 #Add zsh to shells if not there already
 if grep -Fxq "/usr/local/bin/zsh" /private/etc/shells
@@ -86,7 +99,9 @@ else
     echo "Homebrew python exists"
 fi
 
-echo ""
+# maintain sudo
+maintain_sudo
+
 echo "Check Homebrew git"
 if [ ! -f /usr/local/bin/git ]
 then
@@ -101,7 +116,9 @@ else
     echo "Homebrew git exists"
 fi
 
-echo ""
+# maintain sudo
+maintain_sudo
+
 echo "Begin Mercurial install from http://mercurial.berkwood.com"
 cd $DOTFILES_ROOT/tmp
 curl -O http://mercurial.berkwood.com/binaries/Mercurial-2.6.2-py2.7-macosx10.8.zip
@@ -140,7 +157,9 @@ else
     echo "Homebrew Python is default"
 fi
 
-echo ""
+# maintain sudo
+maintain_sudo
+
 echo "Begin install powerline fonts"
 cd $DOTFILES_ROOT/tmp
 echo "Get SourceCodePro Fonts for powerline"
@@ -156,6 +175,9 @@ if [ $? -eq 0 ];then
 else
     echo "FAIL: git clone powerline-fonts"
 fi
+
+# maintain sudo
+maintain_sudo
 
 echo ""
 #install Terminal Theme
@@ -176,6 +198,9 @@ if [ $? -eq 0 ];then
     fi
 fi
 
+# maintain sudo
+maintain_sudo
+
 echo ""
 cd $DOTFILES_ROOT
 #install vim plugins
@@ -185,6 +210,9 @@ git submodule update
 cd $DOTFILES_ROOT/.vim/bundle/YouCompleteMe
 git submodule update  --init --recursive
 ./install.sh --clang-completer
+
+# maintain sudo
+maintain_sudo
 
 echo ""
 echo "Begin installing MacVim"
@@ -208,6 +236,9 @@ then
 else
     echo "Homebrew MacVim exists"
 fi
+
+# maintain sudo
+maintain_sudo
 
 echo ""
 echo "Begin install prezto"
@@ -238,6 +269,9 @@ echo "Link homebrew apps to /Applications"
 brew linkapps
 echo "Linking complete..."
 
+# maintain sudo
+maintain_sudo
+
 echo ""
 echo "Install ipython"
 pip install ipython
@@ -246,6 +280,9 @@ if [ $? -eq 0 ]; then
 else
     echo "FAIL: ipython not installed"
 fi
+
+# maintain sudo
+maintain_sudo
 
 echo ""
 echo "Change shell to /usr/local/bin/zsh"
