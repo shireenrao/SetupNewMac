@@ -8,6 +8,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 function maintain_sudo(){
     # maintain sudo
+    echo ""
     echo "Re-establish sudo"
     sudo -n true
 }
@@ -53,6 +54,7 @@ brew update
 brew doctor
 
 # maintain sudo
+sudo -v
 maintain_sudo
 
 echo ""

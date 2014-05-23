@@ -4,7 +4,7 @@ This is a repo where one can install the following tools automatically
 
 * Homebrew
   * zsh
-  * python
+  * python 2.x
   * git
   * MacVim
 * Mercurial
