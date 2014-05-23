@@ -140,47 +140,47 @@ else
     echo "Homebrew Python is default"
 fi
 
-echo ""                                                                         
-echo "Begin install powerline fonts"                                            
-cd $DOTFILES_ROOT/tmp                                                           
-echo "Get SourceCodePro Fonts for powerline"                                    
-git clone https://github.com/Lokaltog/powerline-fonts                           
-if [ $? -eq 0 ];then                                                            
-    if [ -d $DOTFILES_ROOT/tmp/powerline-fonts/SourceCodePro ];then             
-        echo "Copying SourceCodePro Fonts"                                      
+echo ""
+echo "Begin install powerline fonts"
+cd $DOTFILES_ROOT/tmp
+echo "Get SourceCodePro Fonts for powerline"
+git clone https://github.com/Lokaltog/powerline-fonts
+if [ $? -eq 0 ];then
+    if [ -d $DOTFILES_ROOT/tmp/powerline-fonts/SourceCodePro ];then
+        echo "Copying SourceCodePro Fonts"
         cp -f $DOTFILES_ROOT/tmp/powerline-fonts/SourceCodePro/*.otf $HOME/Library/Fonts
-        echo "Copy Fonts complete!"                                             
-    else                                                                        
-        echo "FAIL: copying fonts!!"                                            
-    fi                                                                          
-else                                                                            
-    echo "FAIL: git clone powerline-fonts"                                      
+        echo "Copy Fonts complete!"
+    else
+        echo "FAIL: copying fonts!!"
+    fi
+else
+    echo "FAIL: git clone powerline-fonts"
 fi
 
-echo ""                                                                         
-#install Terminal Theme                                                         
-echo "Git clone Solarize theme"                                                 
-git clone https://github.com/altercation/solarized                              
-if [ $? -eq 0 ];then                                                            
+echo ""
+#install Terminal Theme
+echo "Git clone Solarize theme"
+git clone https://github.com/altercation/solarized
+if [ $? -eq 0 ];then
     if [ -d $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color ]; then
         cd $DOTFILES_ROOT/tmp/solarized/osx-terminal.app-colors-solarized/xterm-256color
-        echo "Import Solarized Darm theme"                                      
-        open "Solarized Dark xterm-256color.terminal"                           
-        sleep 1 # Wait a bit to make sure the theme is loaded                   
-        echo "Change theme to Solarized Dark"                                   
+        echo "Import Solarized Darm theme"
+        open "Solarized Dark xterm-256color.terminal"
+        sleep 1 # Wait a bit to make sure the theme is loaded
+        echo "Change theme to Solarized Dark"
         osascript -e "tell application \"Terminal\" to set current settings of back window to settings set \"Solarized Dark xterm-256color\"" 
         #defaults write com.apple.terminal "Default Window Settings" -string "Solarized Dark xterm-256color"
         #defaults write com.apple.terminal "Startup Window Settings" -string "Solarized Dark xterm-256color"
         #cp $DOTFILES_ROOT/.com.apple.Terminal.plist ~/Library/Preferences/com.apple.Terminal.plist
-        echo "Theme settings complete!"                                         
-    fi                                                                          
+        echo "Theme settings complete!"
+    fi
 fi
 
 echo ""
-cd $DOTFILES_ROOT                                                               
-#install vim plugins                                                            
-echo "init and update local vim plugin submodules from Github"                  
-git submodule init                                                              
+cd $DOTFILES_ROOT
+#install vim plugins
+echo "init and update local vim plugin submodules from Github"
+git submodule init
 git submodule update
 cd $DOTFILES_ROOT/.vim/bundle/YouCompleteMe
 git submodule update  --init --recursive
@@ -197,15 +197,19 @@ then
         echo "Homebrew MacVim install failed!"
         exit 1
     else
-        echo "Create symlinks for vim in $HOME/bin"
+        echo "MacVim install complete!"
+        echo "Create symlinks for vim"
         ln -s /usr/local/bin/mvim $HOME/bin/vim
         ln -s /usr/local/bin/mvim $HOME/bin/vi
+        ln -s $DOTFILES_ROOT/.vim $HOME/.vim
+        ln -s $DOTFILES_ROOT/.vimrc $HOME/.vim
+        echo "Symlinks done..."
     fi
 else
     echo "Homebrew MacVim exists"
 fi
 
-
+echo ""
 echo "Begin install prezto"
 cd $DOTFILES_ROOT
 git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
@@ -228,6 +232,20 @@ fi
 #for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
 #    ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
 #done
+
+echo ""
+echo "Link homebrew apps to /Applications"
+brew linkapps
+echo "Linking complete..."
+
+echo ""
+echo "Install ipython"
+pip install ipython
+if [ $? -eq 0 ]; then
+    echo "ipython installed..."
+else
+    echo "FAIL: ipython not installed"
+fi
 
 echo ""
 echo "Change shell to /usr/local/bin/zsh"
