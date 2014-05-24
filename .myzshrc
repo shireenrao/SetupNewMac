@@ -1,9 +1,0 @@
-#PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
-#export PATH=$PATH:$HOME/bin
-#export OLD_PATH=$PATH
-#. $HOME/dotfiles/python_environments.sh
-export PATH=/usr/local/bin:$HOME/bin:$PATH:/bin:/usr/sbin:/sbin:/usr/bin
-#My Aliases
-#source $HOME/dotfiles/.aliases
-# Add the exif python module to my PYTHONPATH
-#export PYTHONPATH=$PYTHONPATH:$HOME/mydev/python_modules/exif

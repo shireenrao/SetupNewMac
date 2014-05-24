@@ -37,6 +37,7 @@ fi
 #Install xcode
 #xcode-select --install
 
+echo ""
 echo "Install Homebrew"
 #Install HomeBrew
 command -v brew >/dev/null 2>&1 || {
@@ -74,6 +75,7 @@ else
 fi
 
 #Add zsh to shells if not there already
+echo ""
 if grep -Fxq "/usr/local/bin/zsh" /private/etc/shells
 then
     echo "/usr/local/bin/zsh already exists in /private/etc/shells"
@@ -98,6 +100,7 @@ else
     echo "Homebrew python exists"
 fi
 
+echo ""
 echo "Check Homebrew git"
 if [ ! -f /usr/local/bin/git ]
 then
@@ -112,6 +115,7 @@ else
     echo "Homebrew git exists"
 fi
 
+echo ""
 echo "Begin Mercurial install from http://mercurial.berkwood.com"
 cd $DOTFILES_ROOT/tmp
 curl -O http://mercurial.berkwood.com/binaries/Mercurial-2.6.2-py2.7-macosx10.8.zip
@@ -150,6 +154,7 @@ else
     echo "Homebrew Python is default"
 fi
 
+echo ""
 echo "Begin install powerline fonts"
 cd $DOTFILES_ROOT/tmp
 echo "Get SourceCodePro Fonts for powerline"
@@ -210,8 +215,8 @@ then
         echo "Create symlinks for vim"
         ln -s /usr/local/bin/mvim $HOME/bin/vim
         ln -s /usr/local/bin/mvim $HOME/bin/vi
-        ln -s $DOTFILES_ROOT/.vim $HOME/.vim
-        ln -s $DOTFILES_ROOT/.vimrc $HOME/.vim
+        #ln -s $DOTFILES_ROOT/.vim $HOME/.vim
+        #ln -s $DOTFILES_ROOT/.vimrc $HOME/.vim
         echo "Symlinks done..."
     fi
 else
@@ -257,17 +262,52 @@ else
 fi
 
 echo ""
-echo "Change shell to /usr/local/bin/zsh"
-echo $yourpassword | chsh -s /usr/local/bin/zsh
+user=$(whoami)
+echo "Change shell for $user to /usr/local/bin/zsh"
+echo $yourpassword | sudo -S chsh -s /usr/local/bin/zsh $user
 
 echo ""
 echo "Update Path"
 echo "export PATH=$HOME/bin:$PATH" | tee -a ~/.zprezto/runcoms/zshrc
 echo "Path fixed..."
 
+echo ""
+olddir=~/.dotfiles_old             # old dotfiles backup directory
+files="vimrc vim bash_profile zshrc" # list of files/folders to symlink in homedir
+
+# create dotfiles_old in homedir
+echo -n "Creating $olddir for backup of any existing dotfiles in ~ ..."
+mkdir -p $olddir
+echo "done"
+
+echo ""
+# move any existing dotfiles in homedir to dotfiles_old directory, then create symlinks from the homedir to any files in the ~/dotfiles directory spec
+for file in $files; do
+    if [ -f ~/.$file ];
+    then
+        echo "Moving any existing dotfiles from ~ to $olddir"
+        mv ~/.$file ~/.dotfiles_old/
+    fi
+done
+
+echo ""
+newfiles="vim vimrc functions aliases"
+for file in $newfiles; do
+    echo "Creating symlink to $file in home directory."
+    ln -s $DOTFILES_ROOT/.$file ~/.$file
+done
+
+echo ""
+echo "Add aliases and functions to your prezto .zshrc"
+echo "source ~/.aliases" | tee -a ~/.zprezto/runcoms/zshrc
+echo "source ~/.functions" | tee -a ~/.zprezto/runcoms/zshrc
+echo "done..."
+echo ""
+
 echo "========================================================================"
 echo "= Change the Font to Source Code Pro (a powerline compatible font) and ="
-echo "= also make Solarized Dark your default theme!                         ="
+echo "= also make Solarized Dark your default theme! You can do this from    ="
+echo "= your Terminal Preferences.                                           =".
 echo "= Setup complete!!                                                     ="
 echo "========================================================================"
 
