@@ -4,9 +4,16 @@
 echo "Input your password:"
 read -s yourpassword
 echo $yourpassword | sudo -vS
+if [ $? -ne 0 ]
+then
+    echo "FAIL: Password mismatch!"
+    exit 1
+else
+    echo "Password correct!"
+fi
 #sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until `.osx` has finished       
+# Keep-alive: update existing `sudo` time stamp until `.osx` has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 DOTFILES_ROOT="`pwd`"
