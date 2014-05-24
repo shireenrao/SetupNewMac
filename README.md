@@ -37,7 +37,7 @@ sure you accept XCode's license. You can do that from the command line:
 sudo xcodebuild -license
 ```
 
-To Run my install script, run this:
+To Run my install script, run this (read below in case you want a logfile):
 ```sh
 git clone https://github.com/shireenrao/SetupNewMac ~/.dotfiles
 cd ~/.dotfiles
@@ -45,7 +45,7 @@ sh ./install.sh
 ```
 
 You may want to review what was executed. You can create a logfile of what was
-done by running the install.sh script like this:
+done by running the install.sh script like this instead:
 ```sh
 sh ./install.sh 2>&1 | tee -a logfile
 ```
