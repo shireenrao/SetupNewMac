@@ -1,17 +1,13 @@
 #!/bin/bash
 
 # Ask for sudo password in the beginning..
-sudo -v
+echo "Input your password:"
+read -s yourpassword
+echo $yourpassword | sudo -vS
+#sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until `.osx` has finished       
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
-
-function maintain_sudo(){
-    # maintain sudo
-    echo ""
-    echo "Re-establish sudo"
-    sudo -n true
-}
 
 DOTFILES_ROOT="`pwd`"
 
@@ -53,10 +49,6 @@ echo "Brewing preparation"
 brew update
 brew doctor
 
-# maintain sudo
-sudo -v
-maintain_sudo
-
 echo ""
 #Install zsh
 echo "Check zsh..."
@@ -74,16 +66,14 @@ else
     echo "homebrew zsh exists"
 fi
 
-# maintain sudo
-maintain_sudo
-
 #Add zsh to shells if not there already
 if grep -Fxq "/usr/local/bin/zsh" /private/etc/shells
 then
     echo "/usr/local/bin/zsh already exists in /private/etc/shells"
 else
     echo "Add /usr/local/bin/zsh to /private/etc/shells"
-    echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells
+    #echo "/usr/local/bin/zsh" | sudo tee -a /private/etc/shells
+    echo $yourpassword | sudo -S sh -c "echo \"/usr/local/bin/zsh\" | tee -a /private/etc/shells"
 fi
 
 echo ""
@@ -101,9 +91,6 @@ else
     echo "Homebrew python exists"
 fi
 
-# maintain sudo
-maintain_sudo
-
 echo "Check Homebrew git"
 if [ ! -f /usr/local/bin/git ]
 then
@@ -118,9 +105,6 @@ else
     echo "Homebrew git exists"
 fi
 
-# maintain sudo
-maintain_sudo
-
 echo "Begin Mercurial install from http://mercurial.berkwood.com"
 cd $DOTFILES_ROOT/tmp
 curl -O http://mercurial.berkwood.com/binaries/Mercurial-2.6.2-py2.7-macosx10.8.zip
@@ -128,7 +112,7 @@ if [ -f $DOTFILES_ROOT/tmp/Mercurial-2.6.2-py2.7-macosx10.8.zip ]
 then
     unzip Mercurial-2.6.2-py2.7-macosx10.8.zip >/dev/null 2>&1
     if [ $? -eq 0 ]; then
-        sudo installer -pkg $DOTFILES_ROOT/tmp/mercurial-2.6.2_20130606-py2.7-macosx10.8/mercurial-2.6.2+20130606-py2.7-macosx10.8.mpkg -target /
+        echo $yourpassword | sudo -S installer -pkg $DOTFILES_ROOT/tmp/mercurial-2.6.2_20130606-py2.7-macosx10.8/mercurial-2.6.2+20130606-py2.7-macosx10.8.mpkg -target /
         if [ ! -f /usr/local/bin/hg ]; then
             echo "FAIL: Mercurial install FAILED!!"
             exit 1
@@ -159,9 +143,6 @@ else
     echo "Homebrew Python is default"
 fi
 
-# maintain sudo
-maintain_sudo
-
 echo "Begin install powerline fonts"
 cd $DOTFILES_ROOT/tmp
 echo "Get SourceCodePro Fonts for powerline"
@@ -177,9 +158,6 @@ if [ $? -eq 0 ];then
 else
     echo "FAIL: git clone powerline-fonts"
 fi
-
-# maintain sudo
-maintain_sudo
 
 echo ""
 #install Terminal Theme
@@ -200,9 +178,6 @@ if [ $? -eq 0 ];then
     fi
 fi
 
-# maintain sudo
-maintain_sudo
-
 echo ""
 cd $DOTFILES_ROOT
 #install vim plugins
@@ -212,9 +187,6 @@ git submodule update
 cd $DOTFILES_ROOT/.vim/bundle/YouCompleteMe
 git submodule update  --init --recursive
 ./install.sh --clang-completer
-
-# maintain sudo
-maintain_sudo
 
 echo ""
 echo "Begin installing MacVim"
@@ -238,9 +210,6 @@ then
 else
     echo "Homebrew MacVim exists"
 fi
-
-# maintain sudo
-maintain_sudo
 
 echo ""
 echo "Begin install prezto"
@@ -271,9 +240,6 @@ echo "Link homebrew apps to /Applications"
 brew linkapps
 echo "Linking complete..."
 
-# maintain sudo
-maintain_sudo
-
 echo ""
 echo "Install ipython"
 pip install ipython
@@ -283,12 +249,9 @@ else
     echo "FAIL: ipython not installed"
 fi
 
-# maintain sudo
-maintain_sudo
-
 echo ""
 echo "Change shell to /usr/local/bin/zsh"
-chsh -s /usr/local/bin/zsh
+echo $yourpassword | chsh -s /usr/local/bin/zsh
 
 echo ""
 echo "Update Path"
