@@ -42,7 +42,7 @@ echo "Install Homebrew"
 #Install HomeBrew
 command -v brew >/dev/null 2>&1 || {
     echo "Installing Homebrew"
-    ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go/install)"
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 }
 if [ $? -ne 0 ]
 then

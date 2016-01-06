@@ -139,3 +139,4 @@ alias hax="growlnotify -a 'Activity Monitor' 'System error' -m 'WTF R U DOIN'"
 # image archive to server
 alias movepics="rsync -avzh --progress /Users/shireenrao/Pictures/Sorted/ macmini:/Volumes/WDDuo/Pictures"
 alias sortpics="sorter.py -s /Users/shireenrao/Pictures/2013/ -t /Users/shireenrao/Pictures/Sorted/"
+alias youtube="youtube-dl --extract-audio --audio-format mp3 --audio-quality 0 --prefer-ffmpeg"
