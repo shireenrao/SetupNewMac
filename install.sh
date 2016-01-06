@@ -85,20 +85,20 @@ else
     echo $yourpassword | sudo -S sh -c "echo \"/usr/local/bin/zsh\" | tee -a /private/etc/shells"
 fi
 
-echo ""
-echo "Check Homebrew python..."
-if [ ! -f /usr/local/bin/python ]
-then
-    echo "Homebrew python does not exist.. begin install..."
-    brew install python
-    if [ ! -f /usr/local/bin/python ]
-    then
-        echo "Homebrew python install failed!"
-        exit 1
-    fi
-else
-    echo "Homebrew python exists"
-fi
+#echo ""
+#echo "Check Homebrew python..."
+#if [ ! -f /usr/local/bin/python ]
+#then
+#    echo "Homebrew python does not exist.. begin install..."
+#    brew install python
+#    if [ ! -f /usr/local/bin/python ]
+#    then
+#        echo "Homebrew python install failed!"
+#        exit 1
+#    fi
+#else
+#    echo "Homebrew python exists"
+#fi
 
 echo ""
 echo "Check Homebrew git"
@@ -143,16 +143,16 @@ echo ""
 echo "Update PATH"
 export PATH=/usr/local/bin:$PATH
 
-echo ""
-echo "Check if Homebrew python is default"
-PYTHON_PATH=$(which python)
-if [ ! "$PYTHON_PATH" == "/usr/local/bin/python" ]
-then
-    echo "FAIL: Not homebrew python"
-    exit 1
-else
-    echo "Homebrew Python is default"
-fi
+#echo ""
+#echo "Check if Homebrew python is default"
+#PYTHON_PATH=$(which python)
+#if [ ! "$PYTHON_PATH" == "/usr/local/bin/python" ]
+#then
+#    echo "FAIL: Not homebrew python"
+#    exit 1
+#else
+#    echo "Homebrew Python is default"
+#fi
 
 echo ""
 echo "Begin install powerline fonts"
@@ -252,14 +252,14 @@ echo "Link homebrew apps to /Applications"
 brew linkapps
 echo "Linking complete..."
 
-echo ""
-echo "Install ipython"
-pip install ipython
-if [ $? -eq 0 ]; then
-    echo "ipython installed..."
-else
-    echo "FAIL: ipython not installed"
-fi
+#echo ""
+#echo "Install ipython"
+#pip install ipython
+#if [ $? -eq 0 ]; then
+#    echo "ipython installed..."
+#else
+#    echo "FAIL: ipython not installed"
+#fi
 
 echo ""
 user=$(whoami)
